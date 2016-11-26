@@ -6,7 +6,7 @@
 /*   By: nboute <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/21 13:46:57 by nboute            #+#    #+#             */
-/*   Updated: 2016/11/22 17:28:16 by nboute           ###   ########.fr       */
+/*   Updated: 2016/11/26 17:09:38 by nboute           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # define BUFF_SIZE 1
 
 # include <stdlib.h>
+# include <fcntl.h>
 # include <unistd.h>
 # include "libft/libft.h"
 
@@ -28,7 +29,6 @@ typedef struct		s_line
 }					t_line;
 
 int					get_next_line(const int fd, char **line);
-void				ft_strccpy_seek(char **line, char **str, char c);
 t_line				*ft_checkfd(t_line **list, int fd);
 char				*ft_read(int fd);
 

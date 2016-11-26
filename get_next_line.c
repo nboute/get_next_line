@@ -6,13 +6,12 @@
 /*   By: nboute <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/21 12:28:00 by nboute            #+#    #+#             */
-/*   Updated: 2016/11/23 13:30:52 by nboute           ###   ########.fr       */
+/*   Updated: 2016/11/26 17:50:26 by nboute           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-#include <stdio.h>
 char				*ft_read(int fd)
 {
 	char			buff[BUFF_SIZE + 1];
@@ -66,37 +65,22 @@ int					get_next_line(const int fd, char **line)
 	char			*tmp;
 	size_t			size;
 
-	if (fd < 0 || !line)
+	if (fd < 0 || !line || read(fd, NULL, 0) < 0)
 		return (-1);
-	if (*line)
-		ft_strdel(line);
+	ft_strdel(line);
 	current = ft_checkfd(&list, fd);
-	if (current)
-	printf("%s\n", current->data);
 	if (!current->data)
 		if (!(current->data = ft_read(fd)))
 			return (0);
+	if (!*(current->data))
+		return (0);
 	*line = ft_strcdup(current->data, '\n');
 	tmp = current->data;
 	size = ft_strclen(tmp, '\n');
-	while (tmp[size] == '\n')
+	if (tmp[size] == '\n')
 		size++;
-	current->data = ft_strsub(tmp, size + 1, ft_strlen(tmp) - size);
-	free(tmp);
+	current->data = ft_strsub(tmp, size, ft_strlen(tmp) - size);
+	if (tmp)
+		free(tmp);
 	return (1);
-}
-#include <fcntl.h>
-
-int		main(int ac, char **av)
-{
-	int	fd;
-	char	*str;
-
-	fd = open(av[1], O_RDONLY);
-	str = NULL;
-	while (getchar() != '0')
-	{
-		printf("ret: %i\n", get_next_line(fd, &str));
-		printf("Line: %s\n", str);
-	}
 }
