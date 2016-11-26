@@ -6,30 +6,34 @@
 /*   By: nboute <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/21 12:28:00 by nboute            #+#    #+#             */
-/*   Updated: 2016/11/26 17:50:26 by nboute           ###   ########.fr       */
+/*   Updated: 2016/11/26 20:33:12 by nboute           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char				*ft_read(int fd)
+char				*ft_read(int fd, char *str)
 {
 	char			buff[BUFF_SIZE + 1];
 	char			*tmp;
-	char			*str;
 	int				ret;
 	int				size;
 
-	str = NULL;
 	size = 0;
-	while ((ret = read(fd, buff, BUFF_SIZE)))
+	if (str)
+		if (ft_strchr(str, '\n'))
+			return (str);
+	ret = read(fd, buff, BUFF_SIZE);
+	buff[ret] = '\0';
+	if (ret)
 	{
-		buff[ret] = '\0';
 		tmp = ft_strjoin(str, buff);
 		if (str)
 			free(str);
 		str = tmp;
 	}
+	if (!ft_strchr(str, '\n') && ret)
+		str = ft_read(fd, str);
 	return (str);
 }
 
@@ -67,11 +71,9 @@ int					get_next_line(const int fd, char **line)
 
 	if (fd < 0 || !line || read(fd, NULL, 0) < 0)
 		return (-1);
-	ft_strdel(line);
+	*line = NULL;
 	current = ft_checkfd(&list, fd);
-	if (!current->data)
-		if (!(current->data = ft_read(fd)))
-			return (0);
+	current->data = ft_read(fd, (current->data));
 	if (!*(current->data))
 		return (0);
 	*line = ft_strcdup(current->data, '\n');
